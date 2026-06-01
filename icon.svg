@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+  <rect width="512" height="512" rx="112" fill="#2F2B7D"/>
+  <rect x="96" y="150" width="220" height="26" rx="13" fill="#3CB3AA"/>
+  <text x="256" y="330" font-family="'Nunito', system-ui, sans-serif" font-size="190" font-weight="800" fill="#ffffff" text-anchor="middle">A1</text>
+  <rect x="96" y="378" width="320" height="22" rx="11" fill="#ffffff" opacity="0.35"/>
+</svg>

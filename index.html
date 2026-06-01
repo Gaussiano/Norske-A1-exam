@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Norsk A1 — App de Examen</title>
+  <meta name="description" content="Practica el examen de noruego A1, pregunta a pregunta. Modo estudio y modo examen." />
+  <meta name="theme-color" content="#2F2B7D" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Norsk A1" />
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&family=Noto+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    html, body {
+      margin: 0; padding: 0;
+      font-family: 'Noto Sans', system-ui, -apple-system, sans-serif;
+      background: #eef1f3;
+      color: #1C2230;
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+    }
+    body { display: flex; align-items: center; justify-content: center; padding: 20px; }
+    /* Standalone (deployed / phone): app fills the viewport, no centering frame. */
+    html.standalone, html.standalone body { height: 100%; }
+    html.standalone body { display: block; padding: 0; background: #F4F6F8; overflow: hidden; }
+    .stage { display: flex; align-items: center; justify-content: center; gap: 40px; flex-wrap: wrap; }
+    .annotation { max-width: 280px; font-size: 13px; color: #5A6472; line-height: 1.55; }
+    .annotation h4 { font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: #97A1AD; margin: 0 0 8px; font-weight: 800; font-family: 'Nunito', sans-serif; }
+    .annotation strong { color: #1C2230; font-weight: 700; }
+    .app-root { font-family: 'Noto Sans', system-ui, sans-serif; color: #1C2230; }
+  </style>
+  <script>
+    // Mark the document as standalone when opened directly (not inside the
+    // Claude Design host iframe), so the app renders full-screen with no flash.
+    try { if (window.self === window.top) document.documentElement.classList.add('standalone'); } catch (e) {}
+  </script>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+
+  <!-- Bancos de preguntas -->
+  <script src="questions-k1-3.js"></script>
+  <script src="questions-k4-6.js"></script>
+  <script src="questions-k7-9.js"></script>
+  <script src="questions-index.js"></script>
+
+  <!-- Frame + tweaks -->
+  <script type="text/babel" src="android-frame.jsx"></script>
+  <script type="text/babel" src="tweaks-panel.jsx"></script>
+
+  <!-- App -->
+  <script type="text/babel" src="app.jsx"></script>
+</body>
+</html>

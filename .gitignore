@@ -1,0 +1,13 @@
+# Claude Code / local tooling
+.claude/
+.thumbnail
+
+# Private source material (course notes) — not needed to run the app.
+# These are the originals the question bank was generated from; keeping them
+# out of the repo avoids publishing personal study notes.
+uploads/
+notes-corpus.txt
+
+# OS / editor cruft
+Thumbs.db
+.DS_Store

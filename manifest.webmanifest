@@ -1,0 +1,19 @@
+{
+  "name": "Norsk A1 — App de Examen",
+  "short_name": "Norsk A1",
+  "description": "Practica el examen de noruego A1, pregunta a pregunta.",
+  "start_url": ".",
+  "scope": ".",
+  "display": "standalone",
+  "background_color": "#F4F6F8",
+  "theme_color": "#2F2B7D",
+  "lang": "es",
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}
