@@ -139,7 +139,7 @@ window.VOCAB = [
 
   // ─── KAPITTEL 8 · Prøv i pausen (Jobb / CV) ──────────────────────────────
   { topic: 8, no: 'et arbeid',        es: 'un trabajo',             type: 'noun'  },
-  { topic: 8, no: 'en jobb',          es: 'un trabajo / un empleo', type: 'noun'  },
+  { topic: 8, no: 'en jobb',          es: 'un trabajo',             type: 'noun'  },
   { topic: 8, no: 'en lønn',          es: 'un salario / un sueldo', type: 'noun'  },
   { topic: 8, no: 'en ansatt',        es: 'un/a empleado/a',        type: 'noun'  },
   { topic: 8, no: 'en sjef',          es: 'un/a jefe/a',            type: 'noun'  },
@@ -155,7 +155,7 @@ window.VOCAB = [
   { topic: 9, no: 'et vær',           es: 'el tiempo (meteorológico)', type: 'noun'},
   { topic: 9, no: 'en årstid',        es: 'una estación del año',   type: 'noun'  },
   { topic: 9, no: 'en vår',           es: 'la primavera',           type: 'noun'  },
-  { topic: 9, no: 'en sommer',        es: 'el verano',              type: 'noun'  },
+  { topic: 9, no: 'en sommer',        es: 'verano',                 type: 'noun'  },
   { topic: 9, no: 'en høst',          es: 'el otoño',               type: 'noun'  },
   { topic: 9, no: 'en vinter',        es: 'el invierno',            type: 'noun'  },
   { topic: 9, no: 'sol',              es: 'sol',                    type: 'noun'  },
