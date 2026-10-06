@@ -77,6 +77,8 @@ function Icon({ name, size = 20, color = 'currentColor', stroke = 1.6 }) {
     arrow:    <path d="M5 12h14m-6-6 6 6-6 6"/>,
     chevron:  <path d="m9 6 6 6-6 6"/>,
     pen:      <><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4Z"/></>,
+    search:   <><circle cx="11" cy="11" r="7"/><path d="m20 20-3.2-3.2"/></>,
+    list:     <><path d="M8 6h12M8 12h12M8 18h12M4 6h.01M4 12h.01M4 18h.01"/></>,
   }[name];
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" fill="none"
@@ -167,6 +169,25 @@ function CountChip({ value, label, active, onClick }) {
   );
 }
 
+// Small reference card (Diccionario / Gramática) shown under "Temario incluido".
+function RefButton({ icon, label, sub, onClick }) {
+  return (
+    <button onClick={onClick}
+      style={{ flex: 1, background: T.surface, border: `1.5px solid ${T.border}`, borderRadius: 13,
+               padding: '11px 12px', cursor: 'pointer', textAlign: 'left',
+               display: 'flex', alignItems: 'center', gap: 10 }}>
+      <div style={{ width: 32, height: 32, borderRadius: 9, background: T.navyLight, color: T.navy,
+                    display: 'grid', placeItems: 'center', flexShrink: 0 }}>
+        <Icon name={icon} size={17} color={T.navy} />
+      </div>
+      <div style={{ minWidth: 0 }}>
+        <div style={{ font: `700 13px ${FD}`, color: T.text }}>{label}</div>
+        {sub && <div style={{ font: `400 10.5px ${FB}`, color: T.text3, marginTop: 1, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{sub}</div>}
+      </div>
+    </button>
+  );
+}
+
 function ModeCard({ active, onClick, label, description, icon, accentColor }) {
   const col = accentColor || T.teal;
   const pale = accentColor ? accentColor + '22' : T.tealPale;
@@ -201,7 +222,7 @@ function Checkbox({ checked }) {
 }
 
 // ─── Home ─────────────────────────────────────────────────────────────────────
-function HomeScreen({ mode, setMode, selectedTopics, examSize, setExamSize, soundOn, setSoundOn, onStart, onStartVocab, onOpenTopics }) {
+function HomeScreen({ mode, setMode, selectedTopics, examSize, setExamSize, soundOn, setSoundOn, onStart, onStartVocab, onOpenTopics, onOpenDictionary, onOpenGrammar }) {
   const totalQs = window.ALL_QUESTIONS.length;
   const mcqAvail = window.ALL_QUESTIONS.filter(q => selectedTopics.includes(q.topic)).length;
   const vocabAvail = (window.VOCAB || []).filter(v => selectedTopics.includes(v.topic)).length;
@@ -268,6 +289,14 @@ function HomeScreen({ mode, setMode, selectedTopics, examSize, setExamSize, soun
           </div>
           <Icon name="chevron" size={18} color={T.text3} />
         </button>
+
+        {/* Reference: full book dictionary + A2 grammar */}
+        <div style={{ display: 'flex', gap: 9, marginTop: 9 }}>
+          <RefButton icon="search" label="Diccionario"
+            sub={`${window.DICTIONARY_WORD_COUNT || ''} palabras`} onClick={onOpenDictionary} />
+          <RefButton icon="list" label="Gramática"
+            sub={`${(window.GRAMMAR || []).length} temas A2`} onClick={onOpenGrammar} />
+        </div>
       </div>
 
       {/* Count (not shown for vocab mode — vocab runs unbounded) */}
@@ -373,6 +402,185 @@ function TopicRow({ topic, checked, count, onToggle }) {
       </div>
     </button>
   );
+}
+
+// ─── Dictionary (full book word list, by kapittel + section) ──────────────────
+function DictionaryScreen({ onBack }) {
+  const [query, setQuery] = useState('');
+  const data = window.DICTIONARY || [];
+  const q = query.trim().toLowerCase();
+
+  const filtered = useMemo(() => {
+    if (!q) return data;
+    return data
+      .map(k => ({
+        ...k,
+        sections: k.sections
+          .map(s => ({ ...s, words: s.words.filter(w => w.toLowerCase().includes(q)) }))
+          .filter(s => s.words.length > 0),
+      }))
+      .filter(k => k.sections.length > 0);
+  }, [q, data]);
+
+  const matchCount = useMemo(
+    () => filtered.reduce((a, k) => a + k.sections.reduce((b, s) => b + s.words.length, 0), 0),
+    [filtered]
+  );
+
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
+      <div style={{ padding: '16px 20px 13px', borderBottom: `1px solid ${T.borderSubtle}`, background: T.bg, position: 'sticky', top: 0, zIndex: 2 }}>
+        <button onClick={onBack} style={{ background: 'none', border: 'none', color: T.text2, font: `700 13.5px ${FB}`, cursor: 'pointer', padding: 0, display: 'flex', alignItems: 'center', gap: 6 }}>
+          <span style={{ transform: 'rotate(180deg)', display: 'inline-flex' }}><Icon name="arrow" size={16} color={T.text2} /></span> Volver
+        </button>
+        <h2 style={{ font: `800 21px ${FD}`, margin: '9px 0 3px', letterSpacing: '-0.01em', color: T.navy }}>Diccionario</h2>
+        <p style={{ font: `400 12.5px ${FB}`, color: T.text2, margin: '0 0 11px' }}>
+          Todas las palabras del libro, por kapittel y sección.
+        </p>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 9, background: T.surface, border: `1.5px solid ${T.border}`, borderRadius: 11, padding: '9px 12px' }}>
+          <Icon name="search" size={17} color={T.text3} />
+          <input value={query} onChange={e => setQuery(e.target.value)} placeholder="Buscar palabra…"
+            autoComplete="off" autoCorrect="off" spellCheck="false"
+            style={{ flex: 1, border: 'none', outline: 'none', background: 'transparent', font: `500 14px ${FB}`, color: T.text }} />
+          {query && (
+            <button onClick={() => setQuery('')} style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0, display: 'flex' }}>
+              <Icon name="x" size={15} color={T.text3} />
+            </button>
+          )}
+        </div>
+        {q && <div style={{ font: `600 11px ${FB}`, color: T.text3, marginTop: 7 }}>{matchCount} resultado{matchCount === 1 ? '' : 's'}</div>}
+      </div>
+
+      <div style={{ padding: '12px 20px 18px', display: 'flex', flexDirection: 'column', gap: 14, flex: 1 }}>
+        {filtered.length === 0 && (
+          <div style={{ font: `500 13px ${FB}`, color: T.text3, textAlign: 'center', padding: '24px 0' }}>
+            No hay palabras que coincidan con «{query}».
+          </div>
+        )}
+        {filtered.map(k => {
+          const isA2 = k.kapittel >= 10;
+          const col = isA2 ? '#7A5AE0' : T.teal;
+          return (
+            <div key={k.kapittel}>
+              <div style={{ display: 'flex', alignItems: 'baseline', gap: 8, marginBottom: 8 }}>
+                <span style={{ font: `800 10px ${FB}`, letterSpacing: '0.1em', color: col, textTransform: 'uppercase' }}>Kapittel {k.kapittel}</span>
+                <span style={{ font: `700 13px ${FD}`, color: T.text }}>{k.title}</span>
+              </div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                {k.sections.map(s => (
+                  <div key={s.id} style={{ background: T.surface, border: `1px solid ${T.borderSubtle}`, borderRadius: 11, padding: '10px 12px' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 7, marginBottom: 7 }}>
+                      <span style={{ font: `800 11px ${FD}`, color: col }}>{s.id}</span>
+                      {s.partial && <Pill color={T.text3} bg={T.surfaceAlt} style={{ fontSize: 9 }}>lista parcial</Pill>}
+                      <span style={{ marginLeft: 'auto', font: `600 10px ${FB}`, color: T.text3 }}>{s.words.length}</span>
+                    </div>
+                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
+                      {s.words.map((w, i) => (
+                        <span key={i} style={{ font: `500 12.5px ${FB}`, color: T.text, background: T.surfaceAlt, borderRadius: 7, padding: '4px 9px', lineHeight: 1.3 }}>{w}</span>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+// ─── Grammar (A2 minigrammatikk) ──────────────────────────────────────────────
+function GrammarScreen({ onBack }) {
+  const data = window.GRAMMAR || [];
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
+      <div style={{ padding: '16px 20px 13px', borderBottom: `1px solid ${T.borderSubtle}`, background: T.bg, position: 'sticky', top: 0, zIndex: 2 }}>
+        <button onClick={onBack} style={{ background: 'none', border: 'none', color: T.text2, font: `700 13.5px ${FB}`, cursor: 'pointer', padding: 0, display: 'flex', alignItems: 'center', gap: 6 }}>
+          <span style={{ transform: 'rotate(180deg)', display: 'inline-flex' }}><Icon name="arrow" size={16} color={T.text2} /></span> Volver
+        </button>
+        <h2 style={{ font: `800 21px ${FD}`, margin: '9px 0 3px', letterSpacing: '-0.01em', color: T.navy }}>Gramática A2</h2>
+        <p style={{ font: `400 12.5px ${FB}`, color: T.text2, margin: 0 }}>
+          Minigrammatikk: leddsetninger, som-setninger y spørreord.
+        </p>
+      </div>
+
+      <div style={{ padding: '12px 20px 18px', display: 'flex', flexDirection: 'column', gap: 16, flex: 1 }}>
+        {data.map(topic => (
+          <div key={topic.id} style={{ background: T.surface, border: `1px solid ${T.borderSubtle}`, borderRadius: 13, padding: '14px 15px' }}>
+            <h3 style={{ font: `800 16px ${FD}`, color: T.navy, margin: '0 0 1px' }}>{topic.title}</h3>
+            {topic.subtitle && <div style={{ font: `600 11px ${FB}`, color: T.text3, marginBottom: 11 }}>{topic.subtitle}</div>}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 11 }}>
+              {topic.blocks.map((b, i) => <GrammarBlock key={i} block={b} />)}
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function GrammarBlock({ block }) {
+  if (block.type === 'text') {
+    return <p style={{ font: `400 13px/1.55 ${FB}`, color: T.text2, margin: 0 }}>{block.text}</p>;
+  }
+  if (block.type === 'rule') {
+    return (
+      <div style={{ background: T.tealPale, borderLeft: `3px solid ${T.teal}`, borderRadius: 8, padding: '9px 12px', font: `500 12.5px/1.5 ${FB}`, color: T.text }}>
+        {block.text}
+      </div>
+    );
+  }
+  if (block.type === 'chips') {
+    return (
+      <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
+        {block.items.map((it, i) => (
+          <span key={i} style={{ font: `700 12.5px ${FD}`, color: T.navy, background: T.navyLight, borderRadius: 7, padding: '5px 10px' }}>{it}</span>
+        ))}
+      </div>
+    );
+  }
+  if (block.type === 'pairs') {
+    return (
+      <div>
+        {block.label && <div style={{ font: `800 10px ${FB}`, letterSpacing: '0.08em', color: T.text3, textTransform: 'uppercase', marginBottom: 6 }}>{block.label}</div>}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+          {block.pairs.map((p, i) => (
+            <div key={i} style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'baseline', gap: 6, font: `500 13px ${FB}`, color: T.text }}>
+              <span>{p.a}</span>
+              <span style={{ background: p.sub ? T.navyLight : T.surfaceAlt, color: p.sub ? T.navyInk : T.text2,
+                             borderRadius: 7, padding: '3px 8px', font: `${p.sub ? 600 : 500} 12.5px ${FB}` }}>{p.b}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  }
+  if (block.type === 'table') {
+    return (
+      <div style={{ overflowX: 'auto', borderRadius: 9, border: `1px solid ${T.borderSubtle}` }}>
+        <table style={{ borderCollapse: 'collapse', width: '100%', minWidth: 520 }}>
+          <thead>
+            <tr>{block.headers.map((h, i) => (
+              <th key={i} style={{ font: `800 10px ${FB}`, letterSpacing: '0.04em', color: T.navy, textTransform: 'uppercase',
+                                   textAlign: 'left', padding: '8px 10px', background: T.navyLight, whiteSpace: 'nowrap' }}>{h}</th>
+            ))}</tr>
+          </thead>
+          <tbody>
+            {block.rows.map((row, r) => (
+              <tr key={r} style={{ borderTop: `1px solid ${T.borderSubtle}` }}>
+                {row.map((c, ci) => (
+                  <td key={ci} style={{ font: `${ci === 1 ? 700 : 500} 12px ${FB}`, color: ci === 1 ? T.navy : T.text,
+                                        padding: '7px 10px', whiteSpace: 'nowrap' }}>{c}</td>
+                ))}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    );
+  }
+  return null;
 }
 
 // ─── Write input (shared by ExamScreen + VocabTrainer) ────────────────────────
@@ -890,9 +1098,14 @@ function App() {
   if (screen === 'home') {
     content = <HomeScreen mode={mode} setMode={setMode} selectedTopics={selectedTopics}
                 examSize={examSize} setExamSize={setExamSize} soundOn={soundOn} setSoundOn={setSoundOn}
-                onStart={startExam} onStartVocab={startVocab} onOpenTopics={() => setScreen('topics')} />;
+                onStart={startExam} onStartVocab={startVocab} onOpenTopics={() => setScreen('topics')}
+                onOpenDictionary={() => setScreen('dictionary')} onOpenGrammar={() => setScreen('grammar')} />;
   } else if (screen === 'topics') {
     content = <TopicsScreen selectedTopics={selectedTopics} setSelectedTopics={setSelectedTopics} onBack={() => setScreen('home')} />;
+  } else if (screen === 'dictionary') {
+    content = <DictionaryScreen onBack={() => setScreen('home')} />;
+  } else if (screen === 'grammar') {
+    content = <GrammarScreen onBack={() => setScreen('home')} />;
   } else if (screen === 'vocab') {
     content = <VocabTrainer selectedTopics={selectedTopics} soundOn={soundOn} setSoundOn={setSoundOn} onExit={() => setScreen('home')} />;
   } else if (screen === 'exam') {

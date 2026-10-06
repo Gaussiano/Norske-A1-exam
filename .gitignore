@@ -2,11 +2,13 @@
 .claude/
 .thumbnail
 
-# Private source material (course notes) — not needed to run the app.
-# These are the originals the question bank was generated from; keeping them
-# out of the repo avoids publishing personal study notes.
+# Private / copyrighted source material — not needed to run the app.
+# Course notes and scanned textbook pages were used only to generate the
+# question bank, dictionary and grammar data. Keeping them out of the repo
+# avoids publishing personal notes and copyrighted book scans.
 uploads/
 notes-corpus.txt
+pics/
 
 # OS / editor cruft
 Thumbs.db
