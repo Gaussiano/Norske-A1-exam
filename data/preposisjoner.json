@@ -78,5 +78,6 @@
   { "id": 77, "uttrykk": "få til", "preposisjon": "til", "type": "partikkel", "es": "conseguir, lograr", "setning": "Jeg fikk det endelig ___!", "setning_es": "¡Por fin lo conseguí!" },
   { "id": 78, "uttrykk": "gå ut", "preposisjon": "ut", "type": "partikkel", "es": "salir", "setning": "Skal vi gå ___ i kveld?", "setning_es": "¿Salimos esta noche?" },
   { "id": 79, "uttrykk": "kaste bort", "preposisjon": "bort", "type": "partikkel", "es": "desperdiciar", "setning": "Ikke kast ___ tida di!", "setning_es": "¡No pierdas el tiempo!" },
-  { "id": 80, "uttrykk": "passe på", "preposisjon": "på", "type": "partikkel", "es": "cuidar de, tener cuidado", "setning": "Kan du passe ___ barna i kveld?", "setning_es": "¿Puedes cuidar a los niños esta noche?" }
+  { "id": 80, "uttrykk": "passe på", "preposisjon": "på", "type": "partikkel", "es": "cuidar de, tener cuidado", "setning": "Kan du passe ___ barna i kveld?", "setning_es": "¿Puedes cuidar a los niños esta noche?" },
+  { "id": 81, "uttrykk": "grue seg til", "preposisjon": "til", "type": "fast", "es": "temer (algo futuro), agobiarse por algo que va a pasar", "setning": "Jeg gruer meg ___ eksamen i morgen.", "setning_es": "Me agobia el examen de mañana." }
 ]
