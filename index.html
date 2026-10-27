@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>Norsk A1/A2 — App de Examen</title>
-  <meta name="description" content="Practica el examen de noruego A1/A2, pregunta a pregunta. Modo estudio, examen y vocabulario." />
+  <meta name="description" content="Practica el examen de noruego A1/A2, pregunta a pregunta. Modo estudio, examen, vocabulario y verbos con preposición." />
   <meta name="theme-color" content="#2F2B7D" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
@@ -32,6 +32,19 @@
     .annotation h4 { font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: #97A1AD; margin: 0 0 8px; font-weight: 800; font-family: 'Nunito', sans-serif; }
     .annotation strong { color: #1C2230; font-weight: 700; }
     .app-root { font-family: 'Noto Sans', system-ui, sans-serif; color: #1C2230; }
+
+    /* Module palettes — read by T.navy* / T.teal* in shared.jsx.
+       The root carries data-module="<active tab>", so the tab bar follows the
+       active module; each module panel carries its own data-module too. */
+    :root, [data-module="verb"] {
+      --c-primary: #2F2B7D; --c-primary-ink: #221F5C; --c-primary-light: #ECEBF4;
+      --c-accent: #3CB3AA;  --c-accent-2: #5ECBC3;    --c-accent-pale: #E2F2F0;
+    }
+    [data-module="preposisjoner"] {
+      /* Green. White text on primary 5.1:1, on accent 4.5:1. */
+      --c-primary: #2E7D4F; --c-primary-ink: #1B4D30; --c-primary-light: #E8F5EC;
+      --c-accent: #2A8653;  --c-accent-2: #4CAF7A;    --c-accent-pale: #DFF1E6;
+    }
   </style>
   <script>
     // Mark the document as standalone when opened directly (not inside the
@@ -60,7 +73,9 @@
   <script type="text/babel" src="android-frame.jsx"></script>
   <script type="text/babel" src="tweaks-panel.jsx"></script>
 
-  <!-- App -->
+  <!-- App: shared UI kit, Preposisjoner module, Verb module + tabs shell -->
+  <script type="text/babel" src="shared.jsx"></script>
+  <script type="text/babel" src="preposisjoner.jsx"></script>
   <script type="text/babel" src="app.jsx"></script>
 </body>
 </html>
